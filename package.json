@@ -1,0 +1,41 @@
+{
+  "name": "lambrusco",
+  "version": "1.0.0",
+  "description": "A helper for matching uris agains pathpatterns, validate the results using a json-schema and call a handler.",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vispercept/lambrusco.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Vispercept/lambrusco/issues"
+  },
+  "homepage": "https://github.com/Vispercept/lambrusco#readme",
+  "scripts": {
+    "lint": "eslint .",
+    "dev": "npm run test -- --watch",
+    "test": "mocha"
+  },
+  "keywords": [
+    "lambda",
+    "aws",
+    "json-schema",
+    "path-to-regexp"
+  ],
+  "author": "Thomas König",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-plugin-import": "^2.20.1",
+    "mocha": "^7.0.1",
+    "sinon": "^8.1.1"
+  },
+  "dependencies": {
+    "ajv": "^6.11.0",
+    "ajv-errors": "^1.0.1",
+    "ajv-keywords": "^3.4.1",
+    "path-to-regexp": "^6.1.0"
+  }
+}

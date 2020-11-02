@@ -40,6 +40,7 @@ function validate({ validator, probe, dataVar = 'path' }) {
 
 function route(_opts) {
   const options = validate({ validator: routeOptionsValidator, probe: _opts, dataVar: 'options' });
+  // @todo throw error
   if (ROUTES.find(doesPatternExist(options))) return;
   const validator = options.schema ? ajv.compile(options.schema) : undefined;
   ROUTES.push({ ...options, validator });
@@ -48,6 +49,7 @@ function route(_opts) {
 function handle(uri) {
   if (!uri) return;
   const routeMatch = ROUTES.find(doesUriMatchPattern(uri));
+  //@todo notFound
   if (!routeMatch) return;
 
   const {
@@ -61,12 +63,15 @@ function handle(uri) {
       return handler(cleanParams);
     } catch (error) {
       if (onError) onError(error, uri);
+      // @todo add global errorHandler here
       return error;
     }
   }
 
   return parsedPath.params;
 }
+
+// @todo consider class!
 
 module.exports = {
   route,

@@ -92,60 +92,60 @@ export default class Lambrusco {
 }
 
 
-const app = new Lambrusco({
-  onErrors: async (error: Error): Promise<Response> => {
-    console.error('global err:', error.message)
-    return {x: 'bye bye'};
-  },
-  routes: [
-    {
-      pattern: '/user/:user/:id',
-      schema: {
-        type: 'object',
-        title: 'path schema',
-        required: ['user'],
-        properties: { user: { type: 'number' } },
-        errorMessage: 'mist',
-      },
-      handler: async (x: {user: string, id: string} ): Promise<Response> => {
-        console.log('user:', x.user, 'id', x.id)
-        return {x: 'bye bye'};
-      },
+// const app = new Lambrusco({
+//   onErrors: async (error: Error): Promise<Response> => {
+//     console.error('global err:', error.message)
+//     return {x: 'bye bye'};
+//   },
+//   routes: [
+//     {
+//       pattern: '/user/:user/:id',
+//       schema: {
+//         type: 'object',
+//         title: 'path schema',
+//         required: ['user'],
+//         properties: { user: { type: 'number' } },
+//         errorMessage: 'mist',
+//       },
+//       handler: async (x: {user: string, id: string} ): Promise<Response> => {
+//         console.log('user:', x.user, 'id', x.id)
+//         return {x: 'bye bye'};
+//       },
 
-      onError: async (error: Error): Promise<Response> => {
-        console.error('ERROR:', error.message)
-        return {x: 'bye bye'};
-      },
-    },
-    {
-      pattern: '/book/:title',
-      handler: async (x: {title: string}): Promise<Response> => {
-        console.log('book:', x.title)
-        return {x: 'bye bye'};
-      },
-      onError: async (error: Error): Promise<Response> => {
-        console.error(error.message)
-        return {x: 'bye bye'};
-      }
-    },
-    {
-      pattern: '/error/:number',
-      schema: {
-        type: 'object',
-        title: 'path schema',
-        required: ['number'],
-        properties: { number: { type: 'number' } },
-        errorMessage: 'my err',
-      },
-      handler: async (x: {title: string}): Promise<Response> => {
-        console.log('onerr', x)
-        return {x: 'bye bye'};
-      },
-    },
-  ],
-})
+//       onError: async (error: Error): Promise<Response> => {
+//         console.error('ERROR:', error.message)
+//         return {x: 'bye bye'};
+//       },
+//     },
+//     {
+//       pattern: '/book/:title',
+//       handler: async (x: {title: string}): Promise<Response> => {
+//         console.log('book:', x.title)
+//         return {x: 'bye bye'};
+//       },
+//       onError: async (error: Error): Promise<Response> => {
+//         console.error(error.message)
+//         return {x: 'bye bye'};
+//       }
+//     },
+//     {
+//       pattern: '/error/:number',
+//       schema: {
+//         type: 'object',
+//         title: 'path schema',
+//         required: ['number'],
+//         properties: { number: { type: 'number' } },
+//         errorMessage: 'my err',
+//       },
+//       handler: async (x: {title: string}): Promise<Response> => {
+//         console.log('onerr', x)
+//         return {x: 'bye bye'};
+//       },
+//     },
+//   ],
+// })
 
-app.handle('/user/thomas/123')
-app.handle('/book/fast')
-app.handle('/error/abc')
-app.handle('/nixgibts')
+// app.handle('/user/thomas/123')
+// app.handle('/book/fast')
+// app.handle('/error/abc')
+// app.handle('/nixgibts')

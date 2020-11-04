@@ -1,11 +1,13 @@
-require('esbuild').build({
-  entryPoints: ['source/index.ts'],
+const esbuild = require('esbuild');
+
+esbuild.build({
+  entryPoints: ['src/index.ts'],
   bundle: true,
   minify: true,
   outfile: 'dist/index.js',
-  platform: 'node',
-  target: 'node12',
+  sourcemap: true,
+  tsconfig: 'tsconfig.json',
   define: {
     'process.env.NODE_ENV': 'production',
   },
-}).catch(() => process.exit(1))
+}).catch(err => process.exit(1))

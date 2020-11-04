@@ -1,5 +1,5 @@
 {
-  "watch": ["source"],
+  "watch": ["src"],
   "ext": "ts",
   "exec": "npm run build && node ./dist/index.js",
   "legacyWatch": true

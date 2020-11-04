@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": "abc",
+    "lib": [
+      "es2020"
+    ],
+    // "module": "CommonJS",
+    "target": "es2020",
+    "allowSyntheticDefaultImports": true,
+    "types": [
+      "node"
+    ]
+  }
+}

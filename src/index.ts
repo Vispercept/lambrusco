@@ -11,7 +11,7 @@ const ajv = new Ajv({
 })
 ajvErrors(ajv)
 
-type Response = Record<string, unknown>
+export type Response = Record<string, unknown> | string
 type PathParams = Record<string, unknown>
 
 const matchUriAgainstPattern = (pattern: Path, uri: string) => generateMatcher<PathParams>(pattern, { decode: decodeURIComponent })(uri)

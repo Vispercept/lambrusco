@@ -1,17 +1,16 @@
 import lambrusco from './index'
 
-type Response = Record<string, unknown>
+type Response = Record<string, unknown> | string
 
-test('basic', async () => {
-  const lam = await new lambrusco({
+test('handle', async () => {
+  const app = await new lambrusco({
     routes: [
     {
       pattern: '/test/:id',
-      handler: async (): Promise<Response> => ({x: 'bye bye'}),
-      onError: async (): Promise<Response> => ({x: 'bye bye'})
+      handler: async (params: {id: string}): Promise<Response> => params.id
     }
     ]
   });
-  const x = await lam.handle('/test/1234');
-  expect(x).toStrictEqual({ x: 'bye bye'});
+  const x = await app.handle('/test/1234');
+  expect(x).toStrictEqual('1234');
 });

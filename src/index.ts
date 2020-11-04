@@ -1,7 +1,7 @@
-import { match as generateMatcher, Path } from 'path-to-regexp'
+import {match as generateMatcher, Path} from 'path-to-regexp'
 import Ajv from 'ajv'
 import ajvErrors from 'ajv-errors'
-import { JSONSchema6Object as Schema } from 'json-schema'
+import {JSONSchema6Object as Schema} from 'json-schema'
 import Errors from './Errors'
 
 const ajv = new Ajv({
@@ -14,8 +14,12 @@ ajvErrors(ajv)
 export type Response = Record<string, unknown> | string
 type PathParams = Record<string, unknown>
 
-const matchUriAgainstPattern = (pattern: Path, uri: string) => generateMatcher<PathParams>(pattern, { decode: decodeURIComponent })(uri)
-const validateParams = (schema: Schema, params: PathParams) => ajv.validate(schema, params)
+const matchUriAgainstPattern = (pattern: Path, uri: string) =>
+  generateMatcher<PathParams>(pattern, {decode: decodeURIComponent})(
+    uri
+  )
+const validateParams = (schema: Schema, params: PathParams) =>
+  ajv.validate(schema, params)
 
 type Route = {
   pattern: Path
@@ -32,7 +36,7 @@ export default class Lambrusco {
   doesPatternExist(route: Route): boolean {
     return (
       this.routes.findIndex(
-        ({ pattern }) => pattern === route.pattern,
+        ({pattern}) => pattern === route.pattern
       ) > 0
     )
   }
@@ -41,13 +45,13 @@ export default class Lambrusco {
     options: {
       onErrors?: (error: Error) => Promise<Response>
       routes: Route[]
-    } = { routes: [] },
+    } = {routes: []}
   ) {
     if (options.onErrors) this.onErrors = options.onErrors
-    options.routes.forEach((route) => {
+    options.routes.forEach(route => {
       if (this.doesPatternExist(route)) {
         throw new Error(
-          `A route with pattern ${route.pattern} already exists.`,
+          `A route with pattern ${route.pattern} already exists.`
         )
       }
       this.routes.push(route)
@@ -57,14 +61,16 @@ export default class Lambrusco {
   route(route: Route): void {
     if (this.doesPatternExist(route)) {
       throw new Error(
-        `A route with pattern ${route.pattern} already exists.`,
+        `A route with pattern ${route.pattern} already exists.`
       )
     }
     this.routes.push(route)
   }
 
   private findRoute(uri: string): Route | undefined {
-    return this.routes.find((x) => matchUriAgainstPattern(x.pattern, uri))
+    return this.routes.find(x =>
+      matchUriAgainstPattern(x.pattern, uri)
+    )
   }
 
   async handle(uri?: string): Promise<Response> {
@@ -73,7 +79,8 @@ export default class Lambrusco {
     const routeFound = this.findRoute(uri)
 
     try {
-      if (!routeFound) throw new Errors.NotFoundError(`No route matching uri ${uri}`)
+      if (!routeFound)
+        throw new Errors.NotFoundError(`No route matching uri ${uri}`)
       const match = matchUriAgainstPattern(routeFound.pattern, uri)
       if (!match) return
 
@@ -90,7 +97,6 @@ export default class Lambrusco {
     }
   }
 }
-
 
 // const app = new Lambrusco({
 //   onErrors: async (error: Error): Promise<Response> => {

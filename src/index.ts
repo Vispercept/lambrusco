@@ -7,8 +7,8 @@ import Errors from './Errors'
 type Returnable = Record<string, unknown> | string | number | void
 type PathParams = Record<string, unknown>
 export type Response = Promise<Returnable> | Returnable
-type ErrorFn = (error: Error) => Promise<Response>
-type HandlerFn = (pathParams: PathParams) => Response
+export type ErrorFn = (error: Error) => Response
+export type HandlerFn = (pathParams: PathParams) => Response
 type Route = {
   pattern: Path
   handler: HandlerFn
@@ -69,9 +69,7 @@ export default class Lambrusco {
     )
   }
 
-  async handle(uri?: string): Promise<Response> {
-    // if (!uri) return
-
+  async handle(uri: string): Promise<Response> {
     const routeFound = this.findMatchingRoute(uri)
 
     try {

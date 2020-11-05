@@ -1,4 +1,4 @@
-import Lambrusco, {Response} from './index'
+import Lambrusco, {Response, HandlerFn, ErrorFn} from './index'
 import ValidationError from './Errors/ValidationError'
 import NotFoundError from './Errors/NotFoundError'
 
@@ -54,11 +54,11 @@ test('throw registration-errors if route is already defined', async () => {
         routes: [
           {
             pattern: '/abc',
-            handler: jest.fn(),
+            handler: jest.fn() as HandlerFn,
           },
           {
             pattern: '/abc',
-            handler: jest.fn(),
+            handler: jest.fn() as HandlerFn,
           },
         ],
       })
@@ -76,8 +76,8 @@ test('handle validation errors', async () => {
         shouldUpdate: {type: 'boolean'},
       },
     },
-    onError: jest.fn(),
-    handler: jest.fn(),
+    onError: jest.fn() as ErrorFn,
+    handler: jest.fn() as HandlerFn,
   }
 
   const spy = jest.spyOn(route, 'onError').mockImplementation()
@@ -103,10 +103,10 @@ test('handle handler errors', async () => {
         shouldUpdate: {type: 'boolean'},
       },
     },
-    onError: jest.fn(),
-    handler: (): Response => {
+    onError: jest.fn() as ErrorFn,
+    handler: (() => {
       throw new Error('test')
-    },
+    }) as HandlerFn,
   }
 
   const spy = jest.spyOn(route, 'onError').mockImplementation()
@@ -127,13 +127,13 @@ test('pass errors to default error-handler if route is missing an errorHandler',
         shouldUpdate: {type: 'boolean'},
       },
     },
-    handler: (): Response => {
+    handler: (() => {
       throw new Error('test')
-    },
+    }) as HandlerFn,
   }
 
   const opts = {
-    onErrors: jest.fn(),
+    onErrors: jest.fn() as ErrorFn,
     routes: [route],
   }
 
@@ -146,11 +146,11 @@ test('pass errors to default error-handler if route is missing an errorHandler',
 test('throw an not-found-error if no route is matching the uri', async () => {
   const route = {
     pattern: '/test/:id/:shouldUpdate',
-    handler: jest.fn(),
+    handler: jest.fn() as HandlerFn,
   }
 
   const opts = {
-    onErrors: jest.fn(),
+    onErrors: jest.fn() as ErrorFn,
     routes: [route],
   }
 

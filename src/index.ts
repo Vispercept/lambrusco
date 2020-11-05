@@ -11,7 +11,7 @@ const ajv = new Ajv({
 })
 ajvErrors(ajv)
 
-export type Response = Record<string, unknown> | string
+export type Response = Record<string, unknown> | string | number
 type PathParams = Record<string, unknown>
 
 const matchUriAgainstPattern = (pattern: Path, uri: string) =>

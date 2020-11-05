@@ -1,12 +1,13 @@
 module.exports = {
+  verbose: true,
   "roots": [
     "<rootDir>/src"
   ],
   "testMatch": [
-    "**/__tests__/**/*.+(ts|tsx|js)",
-    "**/?(*.)+(spec|test).+(ts|tsx|js)"
+    "**/?(*.)+(spec).+(ts)"
   ],
   "transform": {
-    "^.+\\.(ts|tsx)$": "esbuild-jest-transform"
+    "^.+\\.(ts)$": "esbuild-jest-transform"
   },
+  "collectCoverageFrom": ["src/**/*.ts"]
 }

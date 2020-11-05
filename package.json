@@ -14,7 +14,7 @@
   "scripts": {
     "build": "node build",
     "dev": "nodemon",
-    "test": "jest",
+    "test": "jest --coverage",
     "test:dev": "jest --watch"
   },
   "keywords": [

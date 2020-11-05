@@ -1,7 +1,7 @@
-import {match as generateMatcher, Path} from 'path-to-regexp'
+import { match as generateMatcher, Path } from 'path-to-regexp'
 import Ajv from 'ajv'
 import ajvErrors from 'ajv-errors'
-import {JSONSchema6Object as Schema} from 'json-schema'
+import { JSONSchema6Object as Schema } from 'json-schema'
 import Errors from './Errors'
 
 type Returnable = Record<string, unknown> | string | number | void
@@ -24,9 +24,7 @@ const ajv = new Ajv({
 ajvErrors(ajv)
 
 const matchUriAgainstPattern = (pattern: Path, uri: string) =>
-  generateMatcher<PathParams>(pattern, {decode: decodeURIComponent})(
-    uri
-  )
+  generateMatcher<PathParams>(pattern, { decode: decodeURIComponent })(uri)
 const validateParams = (schema: Schema, params: PathParams) =>
   ajv.validate(schema, params)
 
@@ -36,19 +34,15 @@ export default class Lambrusco {
   private onErrors: ErrorFn
   private doesPatternExist(route: Route): boolean {
     return (
-      this.routes.findIndex(
-        ({pattern}) => pattern === route.pattern
-      ) >= 0
+      this.routes.findIndex(({ pattern }) => pattern === route.pattern) >= 0
     )
   }
 
-  constructor(options: {onErrors?: ErrorFn; routes: Route[]}) {
+  constructor(options: { onErrors?: ErrorFn; routes: Route[] }) {
     if (options.onErrors) this.onErrors = options.onErrors
-    options.routes.forEach(route => {
+    options.routes.forEach((route) => {
       if (this.doesPatternExist(route)) {
-        throw new Error(
-          `A route with pattern ${route.pattern} already exists.`
-        )
+        throw new Error(`A route with pattern ${route.pattern} already exists.`)
       }
       this.routes.push(route)
     })
@@ -56,17 +50,13 @@ export default class Lambrusco {
 
   route(route: Route): void {
     if (this.doesPatternExist(route)) {
-      throw new Error(
-        `A route with pattern ${route.pattern} already exists.`
-      )
+      throw new Error(`A route with pattern ${route.pattern} already exists.`)
     }
     this.routes.push(route)
   }
 
   private findMatchingRoute(uri: string): Route | undefined {
-    return this.routes.find(x =>
-      matchUriAgainstPattern(x.pattern, uri)
-    )
+    return this.routes.find((x) => matchUriAgainstPattern(x.pattern, uri))
   }
 
   async handle(uri: string): Promise<Response> {
@@ -77,9 +67,7 @@ export default class Lambrusco {
         throw new Errors.NotFoundError(`No route matching uri ${uri}`)
       const match = matchUriAgainstPattern(routeFound.pattern, uri)
       if (!match)
-        throw new Errors.NotFoundError(
-          `No matching params found on uri ${uri}`
-        )
+        throw new Errors.NotFoundError(`No matching params found on uri ${uri}`)
 
       if (routeFound.schema) {
         const valid = validateParams(routeFound.schema, match.params)

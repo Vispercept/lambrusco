@@ -1,6 +1,8 @@
-import Lambrusco, {Response, HandlerFn, ErrorFn} from './index'
+import Lambrusco from './index'
 import ValidationError from './Errors/ValidationError'
 import NotFoundError from './Errors/NotFoundError'
+import { HandlerFn, ErrorFn } from './Route'
+import { Res } from './Route'
 
 test('handles uris to correct handler', async () => {
   const route1 = {
@@ -9,12 +11,12 @@ test('handles uris to correct handler', async () => {
   }
   const route2 = {
     pattern: '/test/:id',
-    handler: (params: {id: string}): Response => params.id,
+    handler: (params: { id: string }): Res => params.id,
   }
   const spy1 = jest.spyOn(route1, 'handler')
   const spy2 = jest.spyOn(route2, 'handler')
 
-  const app = new Lambrusco({routes: [route1, route2]})
+  const app = new Lambrusco({ routes: [route1, route2] })
   const x = await app.handle('/test/1234')
   expect(x).toStrictEqual('1234')
   expect(spy1).not.toHaveBeenCalled
@@ -29,22 +31,19 @@ test('parse parameters against a schema', async () => {
       title: 'path schema',
       required: ['id', 'shouldUpdate'],
       properties: {
-        id: {type: 'number'},
-        shouldUpdate: {type: 'boolean'},
+        id: { type: 'number' },
+        shouldUpdate: { type: 'boolean' },
       },
     },
-    handler: (params: {
-      id: number
-      shouldUpdate: boolean
-    }): Response => ({
+    handler: (params: { id: number; shouldUpdate: boolean }): Res => ({
       id: params.id,
       shouldUpdate: params.shouldUpdate,
     }),
   }
 
-  const app = new Lambrusco({routes: [route]})
+  const app = new Lambrusco({ routes: [route] })
   const x = await app.handle('/test/123/true')
-  expect(x).toStrictEqual({id: 123, shouldUpdate: true})
+  expect(x).toStrictEqual({ id: 123, shouldUpdate: true })
 })
 
 test('throw registration-errors if route is already defined', async () => {
@@ -72,8 +71,8 @@ test('handle validation errors', async () => {
       title: 'path schema',
       required: ['id', 'shouldUpdate'],
       properties: {
-        id: {type: 'number'},
-        shouldUpdate: {type: 'boolean'},
+        id: { type: 'number' },
+        shouldUpdate: { type: 'boolean' },
       },
     },
     onError: jest.fn() as ErrorFn,
@@ -82,7 +81,7 @@ test('handle validation errors', async () => {
 
   const spy = jest.spyOn(route, 'onError').mockImplementation()
 
-  const app = new Lambrusco({routes: [route]})
+  const app = new Lambrusco({ routes: [route] })
   await app.handle('/test/abc/xyz')
   expect(spy).toHaveBeenCalledWith(
     new ValidationError(
@@ -99,8 +98,8 @@ test('handle handler errors', async () => {
       title: 'path schema',
       required: ['id', 'shouldUpdate'],
       properties: {
-        id: {type: 'number'},
-        shouldUpdate: {type: 'boolean'},
+        id: { type: 'number' },
+        shouldUpdate: { type: 'boolean' },
       },
     },
     onError: jest.fn() as ErrorFn,
@@ -111,7 +110,7 @@ test('handle handler errors', async () => {
 
   const spy = jest.spyOn(route, 'onError').mockImplementation()
 
-  const app = new Lambrusco({routes: [route]})
+  const app = new Lambrusco({ routes: [route] })
   await app.handle('/test/123/true')
   expect(spy).toHaveBeenCalledWith(new Error('test'))
 })
@@ -123,8 +122,8 @@ test('pass errors to default error-handler if route is missing an errorHandler',
       title: 'path schema',
       required: ['id', 'shouldUpdate'],
       properties: {
-        id: {type: 'number'},
-        shouldUpdate: {type: 'boolean'},
+        id: { type: 'number' },
+        shouldUpdate: { type: 'boolean' },
       },
     },
     handler: (() => {

@@ -1,7 +1,8 @@
 import Route, { ErrorFn, HandlerFn } from './Route'
+import ValidationError from './Errors/ValidationError';
 
 test('handle validation errors', async () => {
-  const route = new Route({
+  const opts = {
     pattern: '/test/:id/:shouldUpdate',
     schema: {
       type: 'object',
@@ -14,9 +15,11 @@ test('handle validation errors', async () => {
     },
     errorFn: jest.fn() as ErrorFn,
     handler: jest.fn() as HandlerFn,
-  })
+  }
+  const route = new Route(opts)
 
-  expect(() => route.handle('/test/abc/xyz')).toThrow(
-    'data/id should be number, data/shouldUpdate should be boolean'
-  )
+  jest.spyOn(route, 'handleError')
+  route.handle('/test/abc/xyz')
+
+  expect(route.handleError).toHaveBeenCalledWith(new ValidationError('data/id should be number, data/shouldUpdate should be boolean'))
 })

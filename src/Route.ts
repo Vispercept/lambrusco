@@ -24,56 +24,53 @@ export type RouteOptions = {
   schema?: Schema
 }
 
-const matchUriAgainstPattern = (pattern: Path, uri: string) =>
-  generateMatcher<PathParams>(pattern, { decode: decodeURIComponent })(uri)
-
-const validateParams = (schema: Schema, params: PathParams) =>
-  ajv.validate(schema, params)
-
 export default class Route {
   public pattern: Path
   private handler: HandlerFn
   private errorFn?: ErrorFn
-  private schema?: Schema
+  private validate?: Ajv.ValidateFunction
+  private matcher
 
   constructor(options: RouteOptions) {
     this.pattern = options.pattern
+    this.matcher = generateMatcher<PathParams>(options.pattern, { decode: decodeURIComponent })
     this.handler = options.handler
     if (options.errorFn) this.errorFn = options.errorFn
-    if (options.schema) this.schema = options.schema
+    if (options.schema) this.validate = ajv.compile(options.schema)
   }
 
-  private hasSchema(): boolean {
-    return this.schema != undefined
+  private shouldValidateParams(): boolean {
+    return this.validate != undefined
   }
+
 
   public hasMatchingPattern(uri: string): boolean {
-    return matchUriAgainstPattern(this.pattern, uri) !== false
+    return this.matcher(uri) !== false
   }
 
-  public hasErrorHandler(): boolean {
+  private hasErrorHandler(): boolean {
     return this.errorFn != undefined
+  }
+
+  private handleError(error: Error): Res {
+    if (!this.errorFn) throw error
+    return this.errorFn(error)
   }
 
   public handle(uri: string): Res {
     try {
-      const match = matchUriAgainstPattern(this.pattern, uri)
+      const match = this.matcher(uri)
       if (!match)
         throw new Errors.NotFoundError(`No matching params found on uri ${uri}`)
 
-      if (this.hasSchema()) {
-        const valid = validateParams(this.schema, match.params)
-        if (!valid) throw new Errors.ValidationError(ajv.errorsText())
+      if (this.shouldValidateParams()) {
+        const valid = this.validate(match.params)
+        if (!valid) throw new Errors.ValidationError(ajv.errorsText(this.validate.errors))
       }
 
       return this.handler(match.params)
     } catch (error) {
       this.handleError(error)
     }
-  }
-
-  public handleError(error: Error): Res {
-    if (!this.hasErrorHandler()) throw error
-    return this.errorFn(error)
   }
 }

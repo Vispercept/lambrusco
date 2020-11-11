@@ -37,7 +37,6 @@ export default class Lambrusco {
         throw new Errors.NotFoundError(`No route matching uri ${uri}`)
       return await routeFound.handle(uri)
     } catch (error) {
-      if (routeFound?.hasErrorHandler()) return routeFound.handleError(error)
       if (this.onErrors) return this.onErrors(error)
       throw error
     }

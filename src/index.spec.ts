@@ -1,8 +1,6 @@
 import Lambrusco from './index'
-import ValidationError from './Errors/ValidationError'
 import NotFoundError from './Errors/NotFoundError'
-import { HandlerFn, ErrorFn } from './Route'
-import { Res } from './Route'
+import { Res, HandlerFn, ErrorFn } from './Route'
 
 test('handles uris to correct handler', async () => {
   const route1 = {
@@ -63,32 +61,6 @@ test('throw registration-errors if route is already defined', async () => {
       })
   ).toThrow('A route with pattern /abc already exists')
 })
-test('handle validation errors', async () => {
-  const route = {
-    pattern: '/test/:id/:shouldUpdate',
-    schema: {
-      type: 'object',
-      title: 'path schema',
-      required: ['id', 'shouldUpdate'],
-      properties: {
-        id: { type: 'number' },
-        shouldUpdate: { type: 'boolean' },
-      },
-    },
-    onError: jest.fn() as ErrorFn,
-    handler: jest.fn() as HandlerFn,
-  }
-
-  const spy = jest.spyOn(route, 'onError').mockImplementation()
-
-  const app = new Lambrusco({ routes: [route] })
-  await app.handle('/test/abc/xyz')
-  expect(spy).toHaveBeenCalledWith(
-    new ValidationError(
-      'data/id should be number, data/shouldUpdate should be boolean'
-    )
-  )
-})
 
 test('handle handler errors', async () => {
   const route = {
@@ -102,13 +74,13 @@ test('handle handler errors', async () => {
         shouldUpdate: { type: 'boolean' },
       },
     },
-    onError: jest.fn() as ErrorFn,
+    errorFn: jest.fn() as ErrorFn,
     handler: (() => {
       throw new Error('test')
     }) as HandlerFn,
   }
 
-  const spy = jest.spyOn(route, 'onError').mockImplementation()
+  const spy = jest.spyOn(route, 'errorFn').mockImplementation()
 
   const app = new Lambrusco({ routes: [route] })
   await app.handle('/test/123/true')

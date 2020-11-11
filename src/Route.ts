@@ -56,19 +56,24 @@ export default class Route {
   }
 
   public handle(uri: string): Res {
-    const match = matchUriAgainstPattern(this.pattern, uri)
-    if (!match)
-      throw new Errors.NotFoundError(`No matching params found on uri ${uri}`)
+    try {
+      const match = matchUriAgainstPattern(this.pattern, uri)
+      if (!match)
+        throw new Errors.NotFoundError(`No matching params found on uri ${uri}`)
 
-    if (this.hasSchema()) {
-      const valid = validateParams(this.schema, match.params)
-      if (!valid) throw new Errors.ValidationError(ajv.errorsText())
+      if (this.hasSchema()) {
+        const valid = validateParams(this.schema, match.params)
+        if (!valid) throw new Errors.ValidationError(ajv.errorsText())
+      }
+
+      return this.handler(match.params)
+    } catch (error) {
+      this.handleError(error)
     }
-
-    return this.handler(match.params)
   }
 
   public handleError(error: Error): Res {
+    if (!this.hasErrorHandler()) throw error
     return this.errorFn(error)
   }
 }

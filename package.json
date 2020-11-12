@@ -15,7 +15,8 @@
     "build": "node build",
     "dev": "nodemon",
     "test": "jest --coverage --no-cache",
-    "test:dev": "jest --watch --no-cache"
+    "test:dev": "jest --watch --no-cache",
+    "prepare": "npm i && npm build"
   },
   "keywords": [
     "lambda",

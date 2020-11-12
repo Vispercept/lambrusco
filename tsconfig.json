@@ -1,0 +1,16 @@
+{
+  "include": [
+    "src/**/*",
+  ],
+  "compilerOptions": {
+    "outDir": "dist",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "types": [
+      "node",
+      "jest"
+    ],
+    "sourceMap": true
+  }
+}

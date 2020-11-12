@@ -33,7 +33,7 @@
     "@types/path-to-regexp": "^1.7.0",
     "@typescript-eslint/eslint-plugin": "^4.6.1",
     "@typescript-eslint/parser": "^4.6.1",
-    "esbuild": "^0.8.2",
+    "esbuild": "^0.8.6",
     "esbuild-jest-transform": "^1.0.4",
     "eslint": "^7.12.1",
     "eslint-config-airbnb": "^18.2.0",

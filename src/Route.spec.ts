@@ -1,5 +1,5 @@
 import Route, { ErrorFn, HandlerFn } from './Route'
-import ValidationError from './Errors/ValidationError';
+import ValidationError from './Errors/ValidationError'
 
 test('handle validation errors', async () => {
   const opts = {
@@ -16,10 +16,14 @@ test('handle validation errors', async () => {
     errorFn: jest.fn() as ErrorFn,
     handler: jest.fn() as HandlerFn,
   }
-  const route = new Route(opts)
+  jest.spyOn(opts, 'errorFn')
 
-  jest.spyOn(route, 'handleError')
+  const route = new Route(opts)
   route.handle('/test/abc/xyz')
 
-  expect(route.handleError).toHaveBeenCalledWith(new ValidationError('data/id should be number, data/shouldUpdate should be boolean'))
+  expect(opts.errorFn).toHaveBeenCalledWith(
+    new ValidationError(
+      'data/id should be number, data/shouldUpdate should be boolean'
+    )
+  )
 })

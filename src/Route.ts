@@ -1,4 +1,4 @@
-import { match as generateMatcher, Path } from 'path-to-regexp'
+import { match as generateMatcher, MatchFunction, Path } from 'path-to-regexp'
 import { JSONSchema6Object as Schema } from 'json-schema'
 import Errors from './Errors'
 import Ajv from 'ajv'
@@ -29,7 +29,8 @@ export default class Route {
   private handler: HandlerFn
   private errorFn?: ErrorFn
   private validate?: Ajv.ValidateFunction
-  private matcher
+  // private matcher
+  private matcher: MatchFunction
 
   constructor(options: RouteOptions) {
     this.pattern = options.pattern
@@ -43,18 +44,13 @@ export default class Route {
     return this.validate != undefined
   }
 
-
-  public hasMatchingPattern(uri: string): boolean {
-    return this.matcher(uri) !== false
-  }
-
-  private hasErrorHandler(): boolean {
-    return this.errorFn != undefined
-  }
-
   private handleError(error: Error): Res {
     if (!this.errorFn) throw error
     return this.errorFn(error)
+  }
+
+  public hasMatchingPattern(uri: string): boolean {
+    return this.matcher(uri) !== false
   }
 
   public handle(uri: string): Res {
@@ -68,7 +64,7 @@ export default class Route {
         if (!valid) throw new Errors.ValidationError(ajv.errorsText(this.validate.errors))
       }
 
-      return this.handler(match.params)
+      return this.handler(match.params as PathParams)
     } catch (error) {
       this.handleError(error)
     }

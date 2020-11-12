@@ -1,6 +1,6 @@
 {
   "name": "lambrusco",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "A helper for matching uris agains pathpatterns, validate the results using a json-schema and call a handler.",
   "main": "src/index.js",
   "repository": {

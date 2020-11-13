@@ -34,7 +34,9 @@ export default class Route {
 
   constructor(options: RouteOptions) {
     this.pattern = options.pattern
-    this.matcher = generateMatcher<PathParams>(options.pattern, { decode: decodeURIComponent })
+    this.matcher = generateMatcher<PathParams>(options.pattern, {
+      decode: decodeURIComponent,
+    })
     this.handler = options.handler
     if (options.errorFn) this.errorFn = options.errorFn
     if (options.schema) this.validate = ajv.compile(options.schema)
@@ -60,8 +62,11 @@ export default class Route {
         throw new Errors.NotFoundError(`No matching params found on uri ${uri}`)
 
       if (this.shouldValidateParams()) {
-        const valid = this.validate(match.params)
-        if (!valid) throw new Errors.ValidationError(ajv.errorsText(this.validate.errors))
+        const valid = this.validate ? this.validate(match.params) : false
+        if (!valid)
+          throw new Errors.ValidationError(
+            ajv.errorsText(this.validate?.errors)
+          )
       }
 
       return this.handler(match.params as PathParams)

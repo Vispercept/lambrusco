@@ -5,7 +5,7 @@ export type PathParams = Record<string, unknown>
 
 export default class Lambrusco {
   private routes: Route[] = []
-  private onErrors: ErrorFn
+  private onErrors?: ErrorFn
 
   constructor(options: { onErrors?: ErrorFn; routes: RouteOptions[] }) {
     if (options.onErrors) this.onErrors = options.onErrors
@@ -42,3 +42,7 @@ export default class Lambrusco {
     }
   }
 }
+
+module.exports = Lambrusco
+module.exports.default = Lambrusco
+module.exports.__esModule = true

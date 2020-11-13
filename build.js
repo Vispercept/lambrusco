@@ -1,6 +1,7 @@
 const esbuild = require('esbuild');
 
 esbuild.build({
+  platform: 'node',
   entryPoints: ['src/index.ts'],
   bundle: true,
   minify: true,
@@ -10,4 +11,5 @@ esbuild.build({
   define: {
     'process.env.NODE_ENV': 'production',
   },
-}).catch(err => process.exit(1))
+  target: "node12"
+}).catch(err => console.log(err) && process.exit(1))

@@ -1,0 +1,17 @@
+{
+  "name": "lambrusco-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:lambda": "aws lambda invoke --function-name lambrusco-test --invocation-type RequestResponse --payload fileb://example/test-event.json response.txt",
+    "upload": "aws lambda update-function-code --function-name lambrusco-test --zip-file fileb://function.zip",
+    "zip": "zip -r function.zip ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lambrusco": "^2.0.4"
+  }
+}

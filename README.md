@@ -9,6 +9,8 @@ Define patterns, schemata and a handler. When lambrusco.handle is called it will
 
 ## Usage
 
+Examples can be found in the [example directory](./example/README.md).
+
 ### Simple handler
 
 ```ts
